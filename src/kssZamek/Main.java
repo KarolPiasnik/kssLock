@@ -1,13 +1,23 @@
 package kssZamek;
 
-import java.io.File;
+import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
 
-public class Main {
+public class Main extends Application {
 
     public static void rob(Lock lock) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
@@ -27,7 +37,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException, FileNotFoundException {
-
+        launch();
         Path passwordFile = Paths.get("src/kssZamek/haslo.txt");
         Scanner in = new Scanner(passwordFile.toFile());
         String password, passwordA;
@@ -70,6 +80,44 @@ public class Main {
     }
 
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Line line = new Line();
+        line.setStartX(100.0);
+        line.setStartY(150.0);
+        line.setEndX(500.0);
+        line.setEndY(150.0);
+
+        Text text = new Text();
+        //Setting font to the text
+        text.setFont(new Font(45));
+        //setting the position of the text
+        text.setX(50);
+        text.setY(150);
+        text.setText("Welcome to Tutorialspoint");
+
+        Group root = new Group(line, text);
+        //Retrieving the observable list object
+        ObservableList list = root.getChildren();
+        StackPane pane = new StackPane();
+        Scene scene = new Scene(root, 600, 300);
+        scene.setFill(Color.BROWN);
+
+
+
+        //Setting the title to Stage.
+        primaryStage.setTitle("Sample application");
+
+        //Setting the scene to Stage
+        primaryStage.setScene(scene);
+
+        //Displaying the stage
+        primaryStage.show();
+
+
+//Setting the text object as a node
+
+    }
 }
 
 
