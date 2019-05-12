@@ -1,16 +1,19 @@
 package kssZamek;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
-import javafx.scene.Group;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,31 +85,72 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Line line = new Line();
-        line.setStartX(100.0);
-        line.setStartY(150.0);
-        line.setEndX(500.0);
-        line.setEndY(150.0);
+        TextField textField = new TextField();
+        HBox layout = new HBox();
+        VBox lock = new VBox();
+        lock.getChildren().add(textField);
 
-        Text text = new Text();
-        //Setting font to the text
-        text.setFont(new Font(45));
-        //setting the position of the text
-        text.setX(50);
-        text.setY(150);
-        text.setText("Welcome to Tutorialspoint");
+        Button buttonOne = new Button("1");
+        Button buttonTwo = new Button("2");
+        Button buttonThree = new Button("3");
+        Button buttonFour = new Button("4");
+        Button buttonFive = new Button("5");
+        Button buttonSix = new Button("6");
+        Button buttonSeven = new Button("7");
+        Button buttonEight = new Button("8");
+        Button buttonNine = new Button("9");
+        Button buttonZero = new Button("0");
+        Button buttonHash = new Button("#");
+        Button buttonAsterisk = new Button("*");
 
-        Group root = new Group(line, text);
-        //Retrieving the observable list object
-        ObservableList list = root.getChildren();
-        StackPane pane = new StackPane();
-        Scene scene = new Scene(root, 600, 300);
-        scene.setFill(Color.BROWN);
+        GridPane keyboard = new GridPane();
 
+        //Setting size for the pane
+        keyboard.setMinSize(1000, 500);
+
+        //Setting the padding
+        keyboard.setPadding(new Insets(10, 10, 10, 10));
+
+        //Setting the vertical and horizontal gaps between the columns
+        keyboard.setVgap(5);
+        keyboard.setHgap(5);
+
+        //Setting the Grid alignment
+        keyboard.setAlignment(Pos.CENTER);
+        keyboard.add(buttonOne, 0,0);
+        keyboard.add(buttonTwo, 1,0);
+        keyboard.add(buttonThree, 2,0);
+        keyboard.add(buttonFour, 0,1);
+        keyboard.add(buttonFive, 1,1);
+        keyboard.add(buttonSix, 2,1);
+        keyboard.add(buttonSeven, 0,2);
+        keyboard.add(buttonEight, 1,2);
+        keyboard.add(buttonNine, 2,2);
+        keyboard.add(buttonHash, 0,3);
+        keyboard.add(buttonZero, 1,3);
+        keyboard.add(buttonAsterisk, 2,3);
+
+        lock.getChildren().add(keyboard);
+
+
+        VBox info = new VBox();
+
+        Text messege = new Text("SIEMA");
+        File file = new File(getClass().getResource("/resources/img/locked.png").getPath());
+        ImageView img = new ImageView(file.toURI().toString());
+        img.setFitHeight(300);
+        img.setFitWidth(300);
+        info.getChildren().add(messege);
+        info.getChildren().add(img);
+
+
+        layout.getChildren().addAll(lock, info);
+
+        Scene scene = new Scene(layout);
 
 
         //Setting the title to Stage.
-        primaryStage.setTitle("Sample application");
+        primaryStage.setTitle("Electronic lock simulator");
 
         //Setting the scene to Stage
         primaryStage.setScene(scene);
@@ -121,5 +165,4 @@ public class Main extends Application {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
