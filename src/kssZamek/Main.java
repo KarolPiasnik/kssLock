@@ -132,6 +132,7 @@ public class Main extends Application {
                 try {
                     lockObject.changePassword(textField.getText());
                     textField.setText("");
+                    messege.setText("Hasło zostało zmienione");
                 } catch (NotInAdminModeException e1) {
                     e1.printStackTrace();
                 } catch (NotValidPasswordException e1) {
@@ -139,7 +140,6 @@ public class Main extends Application {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                messege.setText("Hasło zostało zmienione");
             } else {
                 try {
                     if (lockObject.unlock(textField.getText())) {
