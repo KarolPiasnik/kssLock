@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.*;
 
 public class Main extends Application {
@@ -38,10 +39,11 @@ public class Main extends Application {
         Lock lockObject = new Lock(text, textA);
 
         TextField textField = new TextField();
+        textField.setStyle("-fx-opacity: 1.0;-fx-font-size: 20;");
         textField.setDisable(Boolean.TRUE);
+        VBox top = new VBox();
         HBox layout = new HBox();
         VBox lock = new VBox();
-        lock.getChildren().add(textField);
 
         Button buttonOne = new Button("1");
         Button buttonTwo = new Button("2");
@@ -70,6 +72,19 @@ public class Main extends Application {
         keyboard.setVgap(5);
         keyboard.setHgap(5);
 
+        buttonAsterisk.setMinSize(75,75);
+        buttonBackspace.setMinSize(75,75);
+        buttonEight.setMinSize(75,75);
+        buttonFour.setMinSize(75,75);
+        buttonFive.setMinSize(75,75);
+        buttonHash.setMinSize(75,75);
+        buttonNine.setMinSize(75,75);
+        buttonOne.setMinSize(75,75);
+        buttonSeven.setMinSize(75,75);
+        buttonSix.setMinSize(75,75);
+        buttonThree.setMinSize(75,75);
+        buttonTwo.setMinSize(75,75);
+        buttonZero.setMinSize(75,75);
         //Setting the Grid alignment
         keyboard.setAlignment(Pos.CENTER);
         keyboard.add(buttonOne, 0, 0);
@@ -107,11 +122,11 @@ public class Main extends Application {
         VBox info = new VBox();
 
         Text messege = new Text("Zamek elektroniczny");
+
         File lockedImage = new File(getClass().getResource("/resources/img/locked.png").getPath());
         ImageView img = new ImageView(lockedImage.toURI().toString());
         img.setFitHeight(300);
         img.setFitWidth(300);
-        info.getChildren().add(messege);
         info.getChildren().add(img);
 
 
@@ -161,9 +176,13 @@ public class Main extends Application {
             }
         });
 
+        lock.setAlignment(Pos.CENTER);
+        info.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(lock, info);
+        layout.setAlignment(Pos.CENTER);
+        top.getChildren().addAll( messege, textField, layout);
 
-        Scene scene = new Scene(layout);
+        Scene scene = new Scene(top);
 
 
         //Setting the title to Stage.
