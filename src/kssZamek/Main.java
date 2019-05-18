@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -32,9 +33,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        Lock lockObject = new Lock("1111", "1234");
 
         TextField textField = new TextField();
+        textField.setDisable(Boolean.TRUE);
         HBox layout = new HBox();
         VBox lock = new VBox();
         lock.getChildren().add(textField);
@@ -90,13 +92,7 @@ public class Main extends Application {
         buttonNine.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
         buttonZero.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
 
-        buttonHash.setOnAction(e -> {
 
-        });
-
-        buttonAsterisk.setOnAction(e -> {
-            System.out.println("ASTERISK");
-        });
 
 
 
@@ -106,13 +102,38 @@ public class Main extends Application {
         VBox info = new VBox();
 
         Text messege = new Text("SIEMA");
-        File file = new File(getClass().getResource("/resources/img/locked.png").getPath());
-        ImageView img = new ImageView(file.toURI().toString());
+        File lockedImage = new File(getClass().getResource("/resources/img/locked.png").getPath());
+        ImageView img = new ImageView(lockedImage.toURI().toString());
         img.setFitHeight(300);
         img.setFitWidth(300);
         info.getChildren().add(messege);
         info.getChildren().add(img);
 
+
+        buttonHash.setOnAction(e -> {
+            try {
+                lockObject.enterAdminMode(textField.getText());
+            } catch (AlreadyInAdminModeException e1) {
+                messege.setText("Jesteś już zalogowany jako administrator.");
+
+            }
+        });
+
+        buttonAsterisk.setOnAction(e -> {
+            try {
+                if(lockObject.unlock(textField.getText())){
+                    File unlockedImage = new File(getClass().getResource("/resources/img/unlocked.png").getPath());
+                    img.setImage(new Image(unlockedImage.toURI().toString()));
+                    messege.setText("Zamek odblokowany");
+                }
+            } catch (AlreadyUnlockedException e1) {
+                img.setImage(new Image(lockedImage.toURI().toString()));
+                lockObject.lock();
+                messege.setText("Zamek zablokowany.");
+            } catch (AdminBlockedException e1) {
+                messege.setText("Zamek został zablokowany z powodu wielokrotnego wpisania złego hasła! Możesz go odblokować logując się jako administrator.");
+            }
+        });
 
         layout.getChildren().addAll(lock, info);
 
