@@ -1,6 +1,8 @@
 package kssZamek;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,76 +17,23 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
+
 
 
 public class Main extends Application {
 
-    public static void rob(Lock lock) throws InterruptedException {
-        Scanner scanner = new Scanner(System.in);
-        String testing;
-        int test = 0;
-        while (test == 0) {
-            System.out.println("Podaj kod do odblokowania zamka. Wpisz 0 aby wrocic do menu.");
-            testing = scanner.nextLine();
-            if (testing.equals("0"))
-                return;
-            else
-                test = lock.check(testing);
-        }
-        if (test == 2) {
-            System.out.println("Elo admin. Co teraz?");
-        }
-    }
 
-    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
+
+    public static void main(String[] args) {
         launch();
-        Path passwordFile = Paths.get("src/kssZamek/haslo.txt");
-        Scanner in = new Scanner(passwordFile.toFile());
-        String password, passwordA;
-        password = in.nextLine();
-        passwordA = in.nextLine();
 
-        Lock lock = new Lock(password, passwordA);
-
-        Scanner scan = new Scanner(System.in);
-        String testing;
-        int test1;
-
-        while (true) {
-            System.out.println("--- MENU ---");
-            System.out.println("Wybierz czynność:");
-            System.out.println("1- Odblokuj kssZamek.Lock");
-            System.out.println("2- Zmien hasło");
-            System.out.println("0- Zakończ program");
-            testing = scan.nextLine();
-
-            if (testing.equals("0")) {
-                return;
-            } else if (testing.equals("1")) {
-                rob(lock);
-                continue;
-            } else if (testing.equals("2")) {
-                System.out.println("Podaj kod administratora. Wpisz '0' jeśli chcesz wrócić do głównego menu");
-                testing = scan.nextLine();
-                if (testing.equals("0")) {
-                    continue;
-                } else
-                    lock.admin(testing);
-
-            } else {
-                System.out.println("Wpisano niepoprawną wartość.");
-                System.out.println("");
-                continue;
-            }
-        }
     }
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
+
+
         TextField textField = new TextField();
         HBox layout = new HBox();
         VBox lock = new VBox();
@@ -129,6 +78,27 @@ public class Main extends Application {
         keyboard.add(buttonHash, 0,3);
         keyboard.add(buttonZero, 1,3);
         keyboard.add(buttonAsterisk, 2,3);
+
+        buttonOne.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonTwo.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonThree.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonFour.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonFive.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonSix.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonSeven.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonEight.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonNine.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+        buttonZero.setOnAction(e -> textField.setText(textField.getText().concat(((Button)(e.getTarget())).getText())));
+
+        buttonHash.setOnAction(e -> {
+
+        });
+
+        buttonAsterisk.setOnAction(e -> {
+            System.out.println("ASTERISK");
+        });
+
+
 
         lock.getChildren().add(keyboard);
 
