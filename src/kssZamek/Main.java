@@ -14,8 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Main extends Application {
 
@@ -39,7 +41,7 @@ public class Main extends Application {
         Lock lockObject = new Lock(text, textA);
 
         TextField textField = new TextField();
-        textField.setStyle("-fx-opacity: 1.0;-fx-font-size: 20;");
+        textField.setStyle("-fx-opacity: 1.0;-fx-font-size: 30;");
         textField.setDisable(Boolean.TRUE);
         VBox top = new VBox();
         HBox layout = new HBox();
@@ -57,7 +59,7 @@ public class Main extends Application {
         Button buttonZero = new Button("0");
         Button buttonHash = new Button("#");
         Button buttonAsterisk = new Button("*");
-        Button buttonBackspace = new Button("Backspace");
+        Button buttonBackspace = new Button("<---");
 
 
         GridPane keyboard = new GridPane();
@@ -72,19 +74,19 @@ public class Main extends Application {
         keyboard.setVgap(5);
         keyboard.setHgap(5);
 
-        buttonAsterisk.setMinSize(75,75);
-        buttonBackspace.setMinSize(75,75);
-        buttonEight.setMinSize(75,75);
-        buttonFour.setMinSize(75,75);
-        buttonFive.setMinSize(75,75);
-        buttonHash.setMinSize(75,75);
-        buttonNine.setMinSize(75,75);
-        buttonOne.setMinSize(75,75);
-        buttonSeven.setMinSize(75,75);
-        buttonSix.setMinSize(75,75);
-        buttonThree.setMinSize(75,75);
-        buttonTwo.setMinSize(75,75);
-        buttonZero.setMinSize(75,75);
+        buttonAsterisk.setMinSize(75, 75);
+        buttonBackspace.setMinSize(75, 75);
+        buttonEight.setMinSize(75, 75);
+        buttonFour.setMinSize(75, 75);
+        buttonFive.setMinSize(75, 75);
+        buttonHash.setMinSize(75, 75);
+        buttonNine.setMinSize(75, 75);
+        buttonOne.setMinSize(75, 75);
+        buttonSeven.setMinSize(75, 75);
+        buttonSix.setMinSize(75, 75);
+        buttonThree.setMinSize(75, 75);
+        buttonTwo.setMinSize(75, 75);
+        buttonZero.setMinSize(75, 75);
         //Setting the Grid alignment
         keyboard.setAlignment(Pos.CENTER);
         keyboard.add(buttonOne, 0, 0);
@@ -121,7 +123,9 @@ public class Main extends Application {
 
         VBox info = new VBox();
 
-        Text messege = new Text("Zamek elektroniczny");
+        Text message = new Text("Zamek elektroniczny");
+        message.setStyle("-fx-opacity: 1.0;-fx-font-size: 30;");
+
 
         File lockedImage = new File(getClass().getResource("/resources/img/locked.png").getPath());
         ImageView img = new ImageView(lockedImage.toURI().toString());
@@ -132,12 +136,12 @@ public class Main extends Application {
 
         buttonHash.setOnAction(e -> {
             try {
-                if (lockObject.enterAdminMode(textField.getText())){
-                  messege.setText("Włączono tryb administratora");
-                  textField.setText("");
+                if (lockObject.enterAdminMode(textField.getText())) {
+                    message.setText("Włączono tryb administratora");
+                    textField.setText("");
                 }
             } catch (AlreadyInAdminModeException e1) {
-                messege.setText("Opuściłes tryb administratora");
+                message.setText("Opuściłes tryb administratora");
                 lockObject.leaveAdminMode();
             }
         });
@@ -147,40 +151,61 @@ public class Main extends Application {
                 try {
                     lockObject.changePassword(textField.getText());
                     textField.setText("");
-                    messege.setText("Hasło zostało zmienione");
+                    message.setText("Hasło zostało zmienione");
                 } catch (NotInAdminModeException e1) {
                     e1.printStackTrace();
                 } catch (NotValidPasswordException e1) {
-                    messege.setText("Hasło musi składać się z 6 cyfr");
+                    message.setText("Hasło musi składać się z 6 cyfr");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
             } else {
-                try {
-                    if (lockObject.unlock(textField.getText())) {
-                        File unlockedImage = new File(getClass().getResource("/resources/img/unlocked.png").getPath());
-                        img.setImage(new Image(unlockedImage.toURI().toString()));
-                        messege.setText("Zamek odblokowany");
-                        textField.setText("");
-                    } else {
-                        messege.setText("Błędne hasło, zostało ci jeszcze " + lockObject.getAttemptsLeft() + " prób");
+                if (!lockObject.getAdminBlocked()) {
+                    try {
+                        if (lockObject.unlock(textField.getText())) {
+                            File unlockedImage = new File(getClass().getResource("/resources/img/unlocked.png").getPath());
+                            img.setImage(new Image(unlockedImage.toURI().toString()));
+                            message.setText("Zamek odblokowany");
+                            textField.setText("");
+                        } else {
+                            if (lockObject.getAttemptsLeft() != 0) {
+                                message.setText("Błędne hasło, zostało ci jeszcze " + lockObject.getAttemptsLeft() + " prób");
+                            } else {
+                                message.setText("Zamek został zablokowany z powodu wielokrotnego wpisania złego hasła! Możesz go odblokować wpisując hasło administratora.");
+                            }
 
+                        }
+                    } catch (AlreadyUnlockedException e1) {
+                        img.setImage(new Image(lockedImage.toURI().toString()));
+                        lockObject.lock();
+                        message.setText("Zamek zablokowany.");
+                    } catch (AdminBlockedException e1) {
+                        message.setText("Zamek został zablokowany z powodu wielokrotnego wpisania złego hasła! Możesz go odblokować wpisując haslo administratora.");
                     }
-                } catch (AlreadyUnlockedException e1) {
-                    img.setImage(new Image(lockedImage.toURI().toString()));
-                    lockObject.lock();
-                    messege.setText("Zamek zablokowany.");
-                } catch (AdminBlockedException e1) {
-                    messege.setText("Zamek został zablokowany z powodu wielokrotnego wpisania złego hasła! Możesz go odblokować logując się jako administrator.");
+                } else {
+                    try {
+                        if (lockObject.enterAdminMode(textField.getText()).equals(Boolean.TRUE))
+                        {
+                            lockObject.leaveAdminMode();
+                            message.setText("Zdjęto blokadę administratora");
+                        }
+                        else{
+                            message.setText("Zamek został zablokowany z powodu wielokrotnego wpisania złego hasła! Możesz go odblokować wpisując haslo administratora.");
+                        }
+                    } catch (AlreadyInAdminModeException e1) {
+                        e1.printStackTrace();
+                    }
+
                 }
             }
+
         });
 
         lock.setAlignment(Pos.CENTER);
         info.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(lock, info);
         layout.setAlignment(Pos.CENTER);
-        top.getChildren().addAll( messege, textField, layout);
+        top.getChildren().addAll(message, textField, layout);
 
         Scene scene = new Scene(top);
 

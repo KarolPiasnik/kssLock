@@ -68,6 +68,7 @@ public class Lock {
             if (this.adminPassword.equals(inputPassword)) {
                 adminMode = Boolean.TRUE;
                 adminBlocked = Boolean.FALSE;
+                failedAttempts = 0;
             }
             return adminMode;
         }
@@ -75,6 +76,8 @@ public class Lock {
             throw new AlreadyInAdminModeException();
         }
     }
+
+    public Boolean getAdminBlocked(){return adminBlocked;}
 
     public void changePassword(String newPassword) throws NotInAdminModeException, NotValidPasswordException, IOException {
         if(newPassword.length() != 6){
